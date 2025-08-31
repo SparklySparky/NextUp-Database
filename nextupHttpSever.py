@@ -96,7 +96,7 @@ class NeuralHTTP(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header("Content-type", "application/json")
                 self.end_headers()
-                
+
                 self.wfile.write(bytes("This is a NextUp server", "utf-8"))
             except sqlite3.Error as er:
                 print(er.sqlite_errorcode)
@@ -144,8 +144,14 @@ class NeuralHTTP(BaseHTTPRequestHandler):
                         }
                     )
 
+                with open('password.txt', 'r') as file:
+                    content = file.read()
+
+                admin = self.path.replace("/dump?password=", "") == content
+
                 # Combine all data into one response
                 response = {
+                    "admin": admin,
                     "students": students_data,
                     "subjects": subjects_data,
                     "draws": draws_data,
