@@ -147,7 +147,7 @@ class NeuralHTTP(BaseHTTPRequestHandler):
                         }
                     )
 
-                with open(f'{path}password.txt', 'r') as file:
+                with open(f'{path}/password.txt', 'r') as file:
                     content = file.read()
 
                 admin = self.path.replace("/dump?password=", "") == content
