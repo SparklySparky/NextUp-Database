@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS `students` (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+    `name` TEXT,
+    `surname` TEXT
+);
+
+CREATE TABLE IF NOT EXISTS `subjects` (
+    `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+    `name` TEXT,
+    `teacher` TEXT
+);
+
+CREATE TABLE IF NOT EXISTS `lists` (
+    `student` INTEGER,
+    `subject` INTEGER,
+    `position` INTEGER NOT NULL,
+
+    PRIMARY KEY (`student`, `subject`),
+    FOREIGN KEY (`student`) REFERENCES `students` (`id`),
+    FOREIGN KEY (`subject`) REFERENCES `subjects` (`id`)
+);
