@@ -1,6 +1,6 @@
 import sqlite3
 
-path = "pathoftheserver"
+path = "."
 
 def exeggcute(cursor, *commands):
     for command in commands:
@@ -76,7 +76,22 @@ def addStudent(name, surname):
     finally:
         conn.close()
 
-def removeStudent(name, surname):
+def updateStudent(id, name, surname):
+    conn = sqlite3.connect(f'{path}/nextup.db')
+    cursor = conn.cursor()
+
+    try:
+        exeggcute(
+            cursor,
+            "PRAGMA foreign_keys = ON",
+            f'''UPDATE students SET name = "{name}", surname = "{surname}" WHERE id = {id}'''
+        )
+        
+        conn.commit()
+    finally:
+        conn.close()
+
+def removeStudent(id):
     conn = sqlite3.connect(f'{path}/nextup.db')
     cursor = conn.cursor()
     
@@ -84,7 +99,7 @@ def removeStudent(name, surname):
         exeggcute(
             cursor,
             "PRAGMA foreign_keys = ON",
-            f'''DELETE FROM students WHERE name = "{name}" AND surname = "{surname}"'''
+            f'''DELETE FROM students WHERE id = {id}'''
         )
 
         conn.commit()
@@ -124,7 +139,7 @@ def addSubject(name, teacher):
     finally:
         conn.close()
 
-def removeSubject(name, teacher):
+def updateSubject(id, name, teacher):
     conn = sqlite3.connect(f'{path}/nextup.db')
     cursor = conn.cursor()
 
@@ -132,7 +147,22 @@ def removeSubject(name, teacher):
         exeggcute(
             cursor,
             "PRAGMA foreign_keys = ON",
-            f'''DELETE FROM subjects WHERE name = "{name}" AND teacher = "{teacher}"'''
+            f'''UPDATE subjects SET name = "{name}", teacher = "{teacher}" WHERE id = {id}'''
+        )
+        
+        conn.commit()
+    finally:
+        conn.close()
+
+def removeSubject(id):
+    conn = sqlite3.connect(f'{path}/nextup.db')
+    cursor = conn.cursor()
+
+    try:
+        exeggcute(
+            cursor,
+            "PRAGMA foreign_keys = ON",
+            f'''DELETE FROM subjects WHERE id = {id}'''
         )
 
         conn.commit()

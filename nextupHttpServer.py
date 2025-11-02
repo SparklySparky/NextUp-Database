@@ -6,7 +6,7 @@ import nextupdb
 import re
 import random
 
-path = "pathoftheserver"
+path = "."
 
 class NeuralHTTP(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -97,7 +97,7 @@ class NeuralHTTP(BaseHTTPRequestHandler):
         elif re.search("/ping", self.path):
             try:
                 self.send_response(200)
-                self.send_header("Content-type", "application/json")
+                self.send_header("Content-type", "text/html")
                 self.end_headers()
 
                 self.wfile.write(bytes("This is a NextUp server", "utf-8"))
@@ -321,7 +321,7 @@ class NeuralHTTP(BaseHTTPRequestHandler):
                 cont_len = int(self.headers.get('Content-Length'))
                 response = json.loads(self.rfile.read(cont_len))
                 
-                nextupdb.removeStudent(response["studentName"], response["studentSurname"])
+                nextupdb.removeStudent(response["id"])
 
                 students = nextupdb.getStudents()
 
@@ -354,7 +354,7 @@ class NeuralHTTP(BaseHTTPRequestHandler):
                 cont_len = int(self.headers.get('Content-Length'))
                 response = json.loads(self.rfile.read(cont_len))
 
-                nextupdb.removeSubject(response["subjectName"], response["teacher"])
+                nextupdb.removeSubject(response["id"])
 
                 subjects = nextupdb.getSubjects()
 
@@ -408,6 +408,77 @@ class NeuralHTTP(BaseHTTPRequestHandler):
                 self.send_header("Content-type", "application/json")
                 self.end_headers()
                 
+                self.wfile.write(bytes(json_resp, "utf-8"))
+            except sqlite3.Error as er:
+                print(er.sqlite_errorcode)
+                print(er.sqlite_errorname)
+                self.send_response(400)
+                self.end_headers()
+        
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def do_PATCH(self):
+        if re.search("/students", self.path):
+            try:
+                cont_len = int(self.headers.get('Content-Length'))
+                response = json.loads(self.rfile.read(cont_len))
+
+                nextupdb.updateStudent(response["id"],response["studentName"], response["studentSurname"])
+
+                students = nextupdb.getStudents()
+
+                response = []
+
+                for stud in students:
+                    response.append(
+                        {
+                            "studentId": stud[0],
+                            "studentName": stud[1],
+                            "studentSurname": stud[2]
+                        }
+                    )
+
+                json_resp = json.dumps(response)
+
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+
+                self.wfile.write(bytes(json_resp, "utf-8"))
+            except sqlite3.Error as er:
+                print(er.sqlite_errorcode)
+                print(er.sqlite_errorname)
+                self.send_response(400)
+                self.end_headers()
+
+        elif re.search("/subjects", self.path):
+            try:
+                cont_len = int(self.headers.get('Content-Length'))
+                response = json.loads(self.rfile.read(cont_len))
+
+                nextupdb.updateSubject(response["id"],response["subjectName"], response["teacher"])
+
+                subjects = nextupdb.getSubjects()
+
+                response = []
+
+                for subj in subjects:
+                    response.append(
+                        {
+                            "subjectId": subj[0],
+                            "subjectName": subj[1],
+                            "teacher": subj[2]
+                        }
+                    )
+
+                json_resp = json.dumps(response)
+
+                self.send_response(200)
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+
                 self.wfile.write(bytes(json_resp, "utf-8"))
             except sqlite3.Error as er:
                 print(er.sqlite_errorcode)
