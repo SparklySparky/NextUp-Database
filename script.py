@@ -168,10 +168,11 @@ class ServerSetupGUI:
         
         commands = [
             f"rm -rf NextUp-Database && git clone https://github.com/SparklySparky/NextUp-Database.git",
-            f"cd NextUp-Database && sed -i 's|pathoftheserver|/home/{user}/NextUp-Database|g' nextupHttpServer.py",
+            f"cd NextUp-Database && sed -i 's|\"pathoftheserver\"|  \"/home/{user}/NextUp-Database\"|g' nextupHttpServer.py",
+            f"cd NextUp-Database && sed -i 's|\"pathoftheserver\"|  \"/home/{user}/NextUp-Database\"|g' nextupdb.py",
             f"cd NextUp-Database && rm -rf script.py",
-            f"cd NextUp-Database && sed -i 's|pathoftheserver|/home/{user}/NextUp-Database|g' nextupdb.py",
             f"cd NextUp-Database && echo '{admin_password}' > password.txt",
+            f"cd NextUp-Database && python3 -c 'import nextupdb; nextupdb.startDb()'",
             f"cat > /tmp/nextup.service << 'EOF'\n"
             f"[Unit]\n"
             f"Description=NextUp Server\n"
@@ -205,7 +206,7 @@ class ServerSetupGUI:
             self.log(f"Test with: curl http://{host}:4444/ping", "cyan")
             messagebox.showinfo("Success", f"Server deployed successfully!\n\nURL: http://{host}:4444")
         else:
-            self.status_label.config(text="❌ Deployment failed", foreground="red")
+            self.status_label.config(text="Deployment failed", foreground="red")
             messagebox.showerror("Error", "Deployment failed. Check console for details.")
         
         # Re-enable buttons

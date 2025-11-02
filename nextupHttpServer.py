@@ -6,7 +6,8 @@ import nextupdb
 import re
 import random
 
-path = "."
+#DO NOT CHANGE
+path = "pathoftheserver"
 
 class NeuralHTTP(BaseHTTPRequestHandler):
     def do_GET(self):

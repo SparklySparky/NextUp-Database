@@ -1,6 +1,7 @@
 import sqlite3
 
-path = "."
+#DO NOT CHANGE
+path = "pathoftheserver"
 
 def exeggcute(cursor, *commands):
     for command in commands:
